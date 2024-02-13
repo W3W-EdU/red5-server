@@ -7,6 +7,8 @@
 
 package org.red5.server.api;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.red5.server.exception.ClientNotFoundException;
 import org.red5.server.exception.ClientRejectedException;
 
@@ -17,6 +19,11 @@ import org.red5.server.exception.ClientRejectedException;
  * @author Luke Hubbard (luke@codegent.com)
  */
 public interface IClientRegistry {
+
+    /**
+     * Next client id
+     */
+    AtomicInteger nextId = new AtomicInteger(0);
 
     /**
      * Check if a client with a given id exists.
@@ -35,7 +42,7 @@ public interface IClientRegistry {
      *
      *         otherwise
      */
-    public boolean hasClient(String id);
+    boolean hasClient(String id);
 
     /**
      * Create a new client client object from connection params.
@@ -48,7 +55,7 @@ public interface IClientRegistry {
      * @throws ClientRejectedException
      *             the client is not allowed to connect
      */
-    public IClient newClient(Object[] params) throws ClientNotFoundException, ClientRejectedException;
+    IClient newClient(Object[] params) throws ClientNotFoundException, ClientRejectedException;
 
     /**
      * Return an existing client from a client id.
@@ -59,7 +66,7 @@ public interface IClientRegistry {
      * @throws ClientNotFoundException
      *             no client with the passed id exists
      */
-    public IClient lookupClient(String id) throws ClientNotFoundException;
+    IClient lookupClient(String id) throws ClientNotFoundException;
 
     /**
      * Adds a client to the registry.
@@ -67,6 +74,41 @@ public interface IClientRegistry {
      * @param client
      *            client
      */
-    public void addClient(IClient client);
+    void addClient(IClient client);
+
+    /**
+     * Removes a client from the registry.
+     *
+     * @param client
+     */
+    default void removeClient(IClient client) {
+        // expected to be overridden
+    }
+
+    /**
+     * Return next client id
+     *
+     * @return Next client id
+     */
+    default String nextId() {
+        String id = "-1";
+        do {
+            // when we reach max int, reset to zero
+            if (nextId.get() == Integer.MAX_VALUE) {
+                nextId.set(0);
+            }
+            id = String.format("%d", nextId.getAndIncrement());
+        } while (hasClient(id));
+        return id;
+    }
+
+    /**
+     * Return previous client id
+     *
+     * @return Previous client id
+     */
+    default String previousId() {
+        return String.format("%d", nextId.get());
+    }
 
 }

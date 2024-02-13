@@ -24,20 +24,20 @@ import org.red5.server.api.stream.ResourceNotFoundException;
 @MXBean
 public interface ClientBroadcastStreamMXBean {
 
-    public void start();
+    void start();
 
-    public void startPublishing();
+    void startPublishing();
 
-    public void stop();
+    void stop();
 
-    public void close();
+    void close();
 
-    public void saveAs(String name, boolean isAppend) throws IOException, ResourceNotFoundException, ResourceExistException;
+    void saveAs(String name, boolean isAppend) throws IOException, ResourceNotFoundException, ResourceExistException;
 
-    public String getSaveFilename();
+    String getSaveFilename();
 
-    public String getPublishedName();
+    String getPublishedName();
 
-    public void setPublishedName(String name);
+    void setPublishedName(String name);
 
 }

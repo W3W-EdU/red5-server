@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -42,11 +41,6 @@ public class ClientRegistry implements IClientRegistry, ClientRegistryMXBean {
      * Clients map
      */
     private ConcurrentMap<String, IClient> clients = new ConcurrentHashMap<String, IClient>(6, 0.9f, 2);
-
-    /**
-     * Next client id
-     */
-    private AtomicInteger nextId = new AtomicInteger(0);
 
     /**
      * The identifier for this client registry
@@ -92,8 +86,8 @@ public class ClientRegistry implements IClientRegistry, ClientRegistryMXBean {
         }
     }
 
-    public Client getClient(String id) throws ClientNotFoundException {
-        Client result = (Client) clients.get(id);
+    public IClient getClient(String id) throws ClientNotFoundException {
+        IClient result = (IClient) clients.get(id);
         if (result == null) {
             throw new ClientNotFoundException(id);
         }
@@ -103,8 +97,8 @@ public class ClientRegistry implements IClientRegistry, ClientRegistryMXBean {
     /**
      * Returns a list of Clients.
      */
-    public ClientList<Client> getClientList() {
-        ClientList<Client> list = new ClientList<Client>();
+    public ClientList<IClient> getClientList() {
+        ClientList<IClient> list = new ClientList<>();
         for (IClient c : clients.values()) {
             list.add((Client) c);
         }
@@ -190,38 +184,12 @@ public class ClientRegistry implements IClientRegistry, ClientRegistryMXBean {
     }
 
     /**
-     * Return next client id
-     *
-     * @return Next client id
-     */
-    public String nextId() {
-        String id = "-1";
-        do {
-            // when we reach max int, reset to zero
-            if (nextId.get() == Integer.MAX_VALUE) {
-                nextId.set(0);
-            }
-            id = String.format("%d", nextId.getAndIncrement());
-        } while (hasClient(id));
-        return id;
-    }
-
-    /**
-     * Return previous client id
-     *
-     * @return Previous client id
-     */
-    public String previousId() {
-        return String.format("%d", nextId.get());
-    }
-
-    /**
      * Removes client from registry
      *
      * @param client
      *            Client to remove
      */
-    protected void removeClient(IClient client) {
+    public void removeClient(IClient client) {
         clients.remove(client.getId());
     }
 

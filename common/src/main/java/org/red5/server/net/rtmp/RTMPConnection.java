@@ -73,7 +73,6 @@ import org.red5.server.so.FlexSharedObjectMessage;
 import org.red5.server.so.ISharedObjectEvent;
 import org.red5.server.so.SharedObjectMessage;
 import org.red5.server.stream.AbstractClientStream;
-import org.red5.server.stream.ClientBroadcastStream;
 import org.red5.server.stream.OutputStream;
 import org.red5.server.stream.PlaylistSubscriberStream;
 import org.red5.server.stream.SingleItemSubscriberStream;
@@ -790,8 +789,10 @@ public abstract class RTMPConnection extends BaseConnection implements IStreamCa
     public IClientBroadcastStream newBroadcastStream(Number streamId) {
         if (isValidStreamId(streamId)) {
             // get ClientBroadcastStream defined as a prototype in red5-common.xml
-            ClientBroadcastStream cbs = (ClientBroadcastStream) scope.getContext().getBean("clientBroadcastStream");
-            customizeStream(streamId, cbs);
+            IClientBroadcastStream cbs = (IClientBroadcastStream) scope.getContext().getBean("clientBroadcastStream");
+            if (cbs != null && cbs instanceof AbstractClientStream) {
+                customizeStream(streamId, (AbstractClientStream) cbs);
+            }
             if (!registerStream(cbs)) {
                 cbs = null;
             }

@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.management.openmbean.CompositeData;
 
 import org.red5.server.api.IClient;
+import org.red5.server.api.IClientRegistry;
 import org.red5.server.api.IConnection;
 import org.red5.server.api.Red5;
 import org.red5.server.api.persistence.IPersistable;
@@ -47,7 +48,7 @@ public class Client extends AttributeStore implements IClient {
     /**
      * Client registry where Client is registered
      */
-    protected transient WeakReference<ClientRegistry> registry;
+    protected transient WeakReference<IClientRegistry> registry;
 
     /**
      * Connections this client is associated with.
@@ -83,7 +84,7 @@ public class Client extends AttributeStore implements IClient {
      *            ClientRegistry
      */
     @ConstructorProperties({ "id", "registry" })
-    public Client(String id, ClientRegistry registry) {
+    public Client(String id, IClientRegistry registry) {
         super();
         if (id != null) {
             this.id = id;
@@ -92,7 +93,7 @@ public class Client extends AttributeStore implements IClient {
         }
         this.creationTime = System.currentTimeMillis();
         // use a weak reference to prevent any hard-links to the registry
-        this.registry = new WeakReference<ClientRegistry>(registry);
+        this.registry = new WeakReference<IClientRegistry>(registry);
     }
 
     /**
@@ -106,7 +107,7 @@ public class Client extends AttributeStore implements IClient {
      *            ClientRegistry
      */
     @ConstructorProperties({ "id", "creationTime", "registry" })
-    public Client(String id, Long creationTime, ClientRegistry registry) {
+    public Client(String id, Long creationTime, IClientRegistry registry) {
         super();
         if (id != null) {
             this.id = id;
@@ -119,7 +120,7 @@ public class Client extends AttributeStore implements IClient {
             this.creationTime = System.currentTimeMillis();
         }
         // use a weak reference to prevent any hard-links to the registry
-        this.registry = new WeakReference<ClientRegistry>(registry);
+        this.registry = new WeakReference<IClientRegistry>(registry);
     }
 
     /**
@@ -374,9 +375,9 @@ public class Client extends AttributeStore implements IClient {
      */
     private void removeInstance() {
         // unregister client
-        ClientRegistry ref = registry.get();
+        IClientRegistry ref = registry.get();
         if (ref != null) {
-            ref.removeClient(this);
+            ref.removeClient((IClient) this);
         } else {
             log.warn("Client registry reference was not accessable, removal failed");
             // TODO: attempt to lookup the registry via the global.clientRegistry

@@ -11,7 +11,7 @@ import java.util.List;
 
 import javax.management.MXBean;
 
-import org.red5.server.Client;
+import org.red5.server.api.IClient;
 import org.red5.server.exception.ClientNotFoundException;
 
 /**
@@ -23,14 +23,10 @@ import org.red5.server.exception.ClientNotFoundException;
 @MXBean
 public interface ClientRegistryMXBean {
 
-    public String nextId();
+    boolean hasClient(String id);
 
-    public String previousId();
+    List<IClient> getClientList();
 
-    public boolean hasClient(String id);
-
-    public List<Client> getClientList();
-
-    public Client getClient(String id) throws ClientNotFoundException;
+    IClient getClient(String id) throws ClientNotFoundException;
 
 }
