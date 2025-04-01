@@ -108,7 +108,7 @@
         <tomcat.version>8.5.100</tomcat.version>
         <junit.version>[4.13.1,)</junit.version>
         <isoparser.version>1.9.59</isoparser.version>
-        <ehcache.version>2.10.6</ehcache.version>
+        <ehcache.version>2.10.9.2</ehcache.version>
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
         <commons-codec.version>1.13</commons-codec.version>
         <commons-collections.version>4.4</commons-collections.version>
