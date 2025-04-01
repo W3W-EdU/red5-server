@@ -99,7 +99,7 @@
         <red5-io.version>${project.version}</red5-io.version>
         <red5-server-common.version>${project.version}</red5-server-common.version>
         <red5-service.version>${project.version}</red5-service.version>
-        <slf4j.version>2.0.11</slf4j.version>
+        <slf4j.version>2.0.17</slf4j.version>
         <logback.version>1.4.14</logback.version>
         <bc.version>1.78.1</bc.version>
         <mina.version>2.0.23</mina.version>
